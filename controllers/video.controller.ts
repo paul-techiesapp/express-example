@@ -1,15 +1,20 @@
 import { Request, Response } from "express";
 import * as _ from "lodash";
 import videoData from "../DATA/video";
+import connection from "../lib/mysql";
 
 class VideoController {
-  public getVideos(req: Request, res: Response): void {
-    res.json(videoData);
+  public async getVideos(req: Request, res: Response): Promise<any> {
+    const [results] = await connection.query("SELECT * FROM videos");
+    res.json(results);
   }
 
-  public getVideo(req: Request, res: Response): void {
-    const video = _.find(videoData, { id: Number(req.params.id) });
-    res.json(video);
+  public async getVideo(req: Request, res: Response): Promise<any> {
+    const [results] = await connection.query(
+      "SELECT * FROM videos WHERE id = ?",
+      [req.params.id]
+    );
+    res.json(results);
   }
 }
 
